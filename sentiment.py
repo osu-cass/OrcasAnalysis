@@ -16,6 +16,7 @@ args = parser.parse_args()
 
 if not(args.lexicon) or not(args.data):
     print('not enough specified arguments')
+    print('try python sentiment.py -h for more help')
     exit()
 
 lexicon_source = args.lexicon

@@ -8,7 +8,7 @@
 `python sentiment.py -lexicon PATH_TO_LEXICON_SOURCE -data PATH_TO_DATA_SOURCE -file PATH_TO_OUTPUT_FILE`
 
 ### Example:
-`python sentiment.py -lexicon lexicon.xlsx -data comments.xlsx -file output.txt`
+`python sentiment.py -lexicon lexicon.xlsx -data data.xlsx -file output.txt`
 
 
 ### This is shorthand for the flags and also works
@@ -16,12 +16,12 @@
 `python sentiment.py -l PATH_TO_LEXICON_SOURCE -d PATH_TO_DATA_SOURCE -f PATH_TO_OUTPUT_FILE`
 
 ### Example:
-`python sentiment.py -l lexicon.xlsx -d comments.xlsx -f output.txt`
+`python sentiment.py -l lexicon.xlsx -d data.xlsx -f output.txt`
 
 ### If the output flag is not specified the program will default to put the results into a file named results.txt
 
 ### Example:
-`python sentiment.py -l lexicon.xlsx -d comments.xlsx`
+`python sentiment.py -l lexicon.xlsx -d data.xlsx`
 
 
 ## List of Features

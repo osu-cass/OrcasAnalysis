@@ -5,12 +5,12 @@ from spellchecker import SpellChecker
 from autocorrect import spell
 import time
 import argparse
-start = time.time()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lexicon', '-l', help="specify path to file that should be used as sentiment lexicon")
 parser.add_argument('--data', '-d', help="specify path to data that should be analyzed")
 parser.add_argument('--file', '-f', help="specify path to output file")
+parser.add_argument('--header', '-H', help="boolean flag so that output produces the header, optional (default=false)", action='store_true')
 args = parser.parse_args()
 
 
@@ -27,6 +27,8 @@ if args.file:
     output_file = args.file
 f = open(output_file, "a+")
 
+if args.header:
+    f.write('first name,last name,email,phone,# of anger words,# of anticipation words,# of disgust words,# of fear words,# of joy words,# of sadness words,# of surprise words,# of trust words,sentiment\r\n')
 #initializes the lexicon dictionary, with the word as the key and the set of values as the value
 lexicon = {}
 for sh in xlrd.open_workbook(lexicon_source).sheets():
@@ -102,26 +104,12 @@ for a,b,c,d,e in zip(comments,email,phone,first,last):
             trustwords        += lexicon[word][9]
         except:
             continue
+    c = str(c)
+    c = c.translate(str.maketrans('', '', string.punctuation))
+    c = c.translate(str.maketrans('', '', ' '))
+    f.write(str(d) + ',' + str(e) + ',' + str(b) + ',' + str(c) +',')
+    f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (len(commentdict)+2)) + '\r\n')
 
-    for i,word in enumerate(a):
-        try:
-            f.write(word)
-            if (i+1) % 160 == 0:
-                f.write('\r\n')
-        except:
-            f.write(' ')
-    f.write('\r\n')
-    f.write('\r\n')
 
-    try:
-        f.write('Posted by:' + str(d) + ' ' + str(e) + ' email:' + str(b) + ' / phone:' + str(c) +'\r\n')
-    except:
-        f.write('Error printing User contact information')
-    f.write('net total:' + str(total) + '\r\n')
-    f.write('percentage of total / (unique words found in lexicon):' + str(total / (wordsInDicts + 2)) + '\r\n')
-    f.write('percentage of total / (unique words found in comment):' + str(total / (len(commentdict) + 2)) + '\r\n')
-    f.write('[Anger:' + str(angerwords) + ', Anticipation:' + str(anticipationwords) + ', Disgust:' + str(disgustwords) + ', Fear:' + str(fearwords) + ', Joy:' + str(joywords) + ', Sadness:' + str(sadnesswords) + ', Surprise:' + str(surprisewords) + ', Trust:' + str(trustwords) + ']\r\n\r\n\r\n')
     del processedcomment
     del misspelled
-end = time.time()
-f.write(str(end - start) + '\r\n')

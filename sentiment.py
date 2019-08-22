@@ -22,7 +22,7 @@ if not(args.lexicon) or not(args.data):
 lexicon_source = args.lexicon
 data_source = args.data
 
-output_file = "results.txt"
+output_file = "results.csv"
 if args.file:
     output_file = args.file
 f = open(output_file, "a+")

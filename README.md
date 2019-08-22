@@ -8,7 +8,7 @@
 `python sentiment.py -lexicon PATH_TO_LEXICON_SOURCE -data PATH_TO_DATA_SOURCE -file PATH_TO_OUTPUT_FILE -H`
 
 ### Example:
-`python sentiment.py -lexicon lexicon.xlsx -data data.xlsx -file output.csv`
+`python sentiment.py -lexicon sampledata/lexicon.xlsx -data sampledata/data.xlsx -file output.csv`
 
 
 ### This is shorthand for the flags and also works
@@ -16,17 +16,17 @@
 `python sentiment.py -l PATH_TO_LEXICON_SOURCE -d PATH_TO_DATA_SOURCE -f PATH_TO_OUTPUT_FILE`
 
 ### Example:
-`python sentiment.py -l lexicon.xlsx -d data.xlsx -f output.csv`
+`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv`
 
 ### If the output flag is not specified the program will default to put the results into a file named results.csv
 
 ### Example:
-`python sentiment.py -l lexicon.xlsx -d data.xlsx`
+`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx`
 
 ### There is an optional parameter that prints out the row of headers for each column. For this flag to be set all that is needed is just to put -H in the command line
 
 ### Example with header
-`python sentiment.py -l lexicon.xlsx -d data.xlsx -f output.csv -H`
+`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv -H`
 
 
 ## List of Features

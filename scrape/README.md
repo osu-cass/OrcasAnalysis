@@ -2,7 +2,7 @@
 >Python 3 (64 bit) <br />  
 >the package dependencies are in the requirements.txt file
 
-#Instructions on how to run the twitter scrape
+# Instructions on how to run the twitter scrape
 
 ### Format for how the execution should be ran
 `python scrapetweets.py --from_date YYYY-MM-DD --to_date YYYY-MM-DD [HASHTAGS (space separated without '#')]`

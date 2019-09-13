@@ -23,7 +23,7 @@
 
 ### Example
 `python scrapetweets.py --from_date 2018-01-01 J35 Orcas`
-`python scrapetweets.py --to_date 2018-01-01 J35 Orcas`
+`python scrapetweets.py --to_date 2018-01-01 J35 Orcas` <br />
 
 ### The date parameters are optional, if no dates are specified it will run indefinitely until the tweets no longer load
 `python scrapetweets.py [HASHTAGS (space separated without '#')]`

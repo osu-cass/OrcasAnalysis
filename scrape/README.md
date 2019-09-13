@@ -18,7 +18,7 @@
 `python scrapetweets.py -F 2018-01-01 -T 2019-01-01 J35 Orcas`
 
 ### Both date flags do not have to be specified. If only the from-date flag is set it will look for tweets from that to present. If only the to-date flag is set it will look for tweets up to that date
-`python scrapetweets.py --from_date YYYY-MM-DD [HASHTAGS (space separated without '#')]`
+`python scrapetweets.py --from_date YYYY-MM-DD [HASHTAGS (space separated without '#')]`<br />
 `python scrapetweets.py --to_date YYYY-MM-DD [HASHTAGS (space separated without '#')]`
 
 ### Example

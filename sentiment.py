@@ -75,7 +75,7 @@ for a,b,c,d,e in zip(comments,email,phone,first,last):
     processedcomment = processedcomment.lower().split()
     misspelled = []
     misspelled = spellcheck.unknown(processedcomment)
-    [x for x in processedcomment if x not in misspelled]
+    processedcomment = [x for x in processedcomment if x not in misspelled]
     for y in misspelled:
         processedcomment.append(spell(y))
 

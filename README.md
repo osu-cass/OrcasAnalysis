@@ -57,7 +57,7 @@
 - in the windows search bar type in cmd and it should be clickable
 ### 6 In the command prompt navigate to where the sentiment.py, lexicon, and data files are located
 - if the file was located in Downloads
-`CD Downloads`
+`cd Downloads`
 ### 7 There is a provided requirements.txt file that comes with the sentiment.py package to make it easier to install required dependencies
 - This should be done only once before you can run the sentiment analysis
 - In the command prompt you should enter

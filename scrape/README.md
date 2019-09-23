@@ -36,4 +36,41 @@
 - Scrapes Tweets based on user inputted dates <br />
 - Places Tweets into excel file in same column <br />
 
-## Set up instructions coming soon
+## Initial Set Up
+### 1 Go to Python.org
+- Click Downloads tab
+- Click Download Windows x86-64 executable installer
+### 2 Open/run the downloaded executable
+- Click the checkbox to add Python 3.7 to path
+- click install now
+- After completing the installation the window can now be closed
+### 3 In the command prompt navigate to where the scrapetweets.py program is located
+- If you just downloaded the zip and extracted it the command below should be quite similar
+`cd Downloads\OrcasAnalysis-1.0\scrape`
+### 4 Install Dependencies
+- In the command prompt enter the following
+`pip install -r requirements.txt`
+### 5 Download the Chrome Driver (manipulatable chrome browser)
+- First find out what version of chrome you are running
+- This can be done by going to the search menu on chrome, finding the help tab, and clicking on about google chrome
+- This should take you to a page where it displays the version of chrome
+![About Google Chrome](/img/aboutchrome.png)
+![Version of Chrome](/img/versionchrome.png)
+- Now that you know the version of chrome you need head over to <https://chromedriver.chromium.org/downloads>
+- Download the version of the web driver that matches the version of chrome you have
+![Version of Chrome Driver](/img/versionschromedriver.png)
+- After clicking the matching version it should ask you to download the zip you want
+- Choose the win32.zip option as it will allow the program to be installed on Windows
+![OS type](/img/ostype.png)
+### 6 Extract The Application to Desktop
+- Go to where you downloaded the chrome driver and extract the executable to your desktop
+![Extract exe](/img/extractexe.png)
+### 7 Setting up environment variables
+- In the windows search bar in the bottom left corner near the start menu search for "Edit environment variables"
+![Edit environment variables](/img/windowssearch.png)
+- When the screen opens add a new environment variable to the user local variables
+- The name of the new variable has to be named CHROME_PATH and should be the path to the chrome driver you just installed and extracted
+![Set up environment](/img/setupenvironment.png)
+![What it should look like after](/img/whatitshouldlooklike.png)
+### 8 Finished and now you can run your scraper for Tweets
+- The installation is now complete and you can run the tweet scraper with the execution instructions above 

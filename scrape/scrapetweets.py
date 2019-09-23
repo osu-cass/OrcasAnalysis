@@ -2,6 +2,7 @@ from selenium import webdriver
 import time
 import xlwt
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--from_date', '-F', help='Enter start date to search tweets')
@@ -15,11 +16,13 @@ option.experimental_options["prefs"] = chrome_prefs
 chrome_prefs["profile.default_content_settings"] = {"images": 2}
 chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
 
-chrome_path = r"C:\Users\nguyenco\Desktop\chromedriver_win32\chromedriver.exe"
-
+try:
+    chrome_path = str(os.environ.get("CHROME_PATH"))
+except:
+    print('CHROME_PATH not specified in environment variables')
+    exit()
 driver = webdriver.Chrome(chrome_path, options=option)
 
-# driver.get("https://twitter.com/search?f=tweets&q=%23j35%23orcas")
 queryurl = "https://twitter.com/search?f=tweets&vertical=default&q="
 for hashtag in args.hashtags:
     queryurl += "%23" + hashtag
@@ -31,20 +34,10 @@ if args.to_date:
 
 driver.get(queryurl)
 
-
-
-# print(tweets)
-# SCROLL_PAUSE_TIME = 1.0
-
-# Get scroll height
-# last_height = driver.execute_script("return document.body.scrollHeight")
-
 while True:
-    # SCROLL_PAUSE_TIME += .005
-    # Scroll down to bottom
+
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    # Wait to load page
-    # time.sleep(SCROLL_PAUSE_TIME)
+
     try:
         driver.find_element_by_class_name('has-more-items')
     except:
@@ -57,16 +50,9 @@ while True:
         except:
             break
 
-
-    # Calculate new scroll height and compare with last scroll height
-    # new_height = driver.execute_script("return document.body.scrollHeight")
-    # if driver.find_element_by_xpath('//*[@id="timeline"]/div/div[2]/div[1]/div/div[1]/div/p[2]/button'):
-
-    # last_height = new_height
-
 tweets = driver.find_elements_by_xpath("//p[@class='TweetTextSize  js-tweet-text tweet-text']")
 
-driver.close()
+
 
 workbook = xlwt.Workbook()
 sheet = workbook.add_sheet('mytweets')
@@ -80,3 +66,5 @@ outputfile = '.xls'
 for hashtag in args.hashtags:
     outputfile = hashtag + outputfile
 workbook.save(outputfile)
+
+driver.close()

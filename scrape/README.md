@@ -45,10 +45,10 @@
 - click install now
 - After completing the installation the window can now be closed
 ### 3 In the command prompt navigate to where the scrapetweets.py program is located
-- If you just downloaded the zip and extracted it the command below should be quite similar
+- If you just downloaded the zip and extracted it the command below should be quite similar <br/>
 `cd Downloads\OrcasAnalysis-1.0\scrape`
 ### 4 Install Dependencies
-- In the command prompt enter the following
+- In the command prompt enter the following<br/>
 `pip install -r requirements.txt`
 ### 5 Download the Chrome Driver (manipulatable chrome browser)
 - First find out what version of chrome you are running

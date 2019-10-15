@@ -36,7 +36,7 @@
 - Scrapes Tweets based on user inputted dates <br />
 - Places Tweets into excel file in same column <br />
 
-## Initial Set Up
+## Initial Set Up Windows
 ### 1 Go to Python.org
 - Click Downloads tab
 - Click Download Windows x86-64 executable installer
@@ -74,3 +74,46 @@
 ![What it should look like after](./img/whatitshouldlooklike.png)
 ### 8 Finished and now you can run your scraper for Tweets
 - The installation is now complete and you can run the tweet scraper with the execution instructions above
+
+## Inital Set Up Mac
+### 1 Follow the initial set up instruction on how to install Python3 on Mac
+### 2 Install Pip
+- in the command line type <br/> 
+`curl https://bootstrap.pypa.io/pypa.io/get-pip.py -o get-pip.py` <br/>
+`python get-pip.py`
+### 3 After installing pip, we need to install all the package dependencies. <br/>
+`pip install -r ../requirements.txt` <br/>
+`pip install -r requirements.txt` <br/>
+### 4 Download the Chrome Driver (manipulatable chrome browser)
+- First find out what version of chrome you are running
+- This can be done by going to the search menu on chrome, finding the help tab, and clicking on about google chrome (its in the same spot for both windows and mac)
+- This should take you to a page where it displays the version of chrome
+![About Google Chrome](./img/aboutchrome.png)
+![Version of Chrome](./img/versionchrome.png)
+- Now that you know the version of chrome you need head over to <https://chromedriver.chromium.org/downloads>
+- Download the version of the web driver that matches the version of chrome you have
+![Version of Chrome Driver](./img/versionschromedriver.png)
+- After clicking the matching version it should ask you to download the zip you want
+- Choose the mac64.zip option as it will allow the program to be installed on Windows
+![OS type](./img/ostype.png)
+### 5 Extract chrome driver to desktop
+- After the zip is uncompressed move the chrome driver executable to anywhere on the desktop
+### 6 Adding chrome_path to environment variables
+- In the command line type <br/>
+`export CHROME_PATH="$HOME/Desktop/chromedriver"`
+### 7 Finished and now you can run your scraper for Tweets
+- The installation is now complete and you can run the tweet scraper with the execution instructions above
+
+
+
+
+
+
+
+
+
+
+
+
+
+

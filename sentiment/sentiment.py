@@ -71,28 +71,27 @@ if args.header:
     f.write('first name,last name,email,phone,# of anger words,# of anticipation words,# of disgust words,# of fear words,# of joy words,# of sadness words,# of surprise words,# of trust words,sentiment\r\n')
 #initializes the lexicon dictionary, with the word as the key and the set of values as the value
 lexicon = {}
-#COULBY UNCOMMENT OUT BELOW AFTER YOU IMPLEMENT PRE-PROCESS
-# for sh in xlrd.open_workbook(lexicon_source).sheets():
-#     for row in range(sh.nrows):
-#         myRow = sh.row_values(row)
-#         lexicon[str(myRow[0])] = myRow[-10:]
+for sh in xlrd.open_workbook(lexicon_source).sheets():
+    for row in range(sh.nrows):
+        myRow = sh.row_values(row)
+        lexicon[str(myRow[0])] = myRow[-10:]
 
 #this initializes the comments to be analyzed and parses the excel sheets for the comments column
 comments = []
-email = []
-phone = []
-first = []
-last = []
+emails = []
+phones = []
+firsts = []
+lasts = []
 
 xls = pd.ExcelFile(data_source)
 
 for sheet_name in xls.sheet_names:
     df = xls.parse(sheet_name)
     comments = comments + list(df['Comments'])
-    email = email + list(df['email'])
-    phone = phone + list(df['phone'])
-    first = first + list(df['first'])
-    last = last + list(df['last'])
+    emails = emails + list(df['email'])
+    phones = phones + list(df['phone'])
+    firsts = firsts + list(df['first'])
+    lasts = lasts + list(df['last'])
 
 p = Preprocess()
 
@@ -126,6 +125,7 @@ def find_negation(index, word_type, text):
 
 def get_text_from_preprocess(processed_comment):
     text = []
+    total = wordsInDicts = angerwords = anticipationwords = disgustwords = fearwords = joywords = sadnesswords = surprisewords = trustwords = total_words = 0
     processed_comment_list = processed_comment.split()
     for word in processed_comment_list:
         text.append(word.split("/"))
@@ -134,86 +134,58 @@ def get_text_from_preprocess(processed_comment):
             should_inverse = find_negation(index, get_tag(pair), text)
             if should_inverse:
                 #Add inverse values to the total emotion
-                print("negation found for word:" + str(get_word(pair)))
+                try:
+                    total += lexicon[get_word(pair)][1]
+                    total -= lexicon[get_word(pair)][0]
+                    total_words += 1
+                    angerwords        += int(not lexicon[get_word(pair)][2])
+                    anticipationwords += int(not lexicon[get_word(pair)][3])
+                    disgustwords      += int(not lexicon[get_word(pair)][4])
+                    fearwords         += int(not lexicon[get_word(pair)][5])
+                    joywords          += int(not lexicon[get_word(pair)][6])
+                    sadnesswords      += int(not lexicon[get_word(pair)][7])
+                    surprisewords     += int(not lexicon[get_word(pair)][8])
+                    trustwords        += int(not lexicon[get_word(pair)][9])
+                except:
+                    continue
+                # print("negation found for Word(s):" + str(get_word(pair)))
             else:
                 #add given values to totals
-                print("no negation found for word:" + str(get_word(pair)))
+                try:
+                    total += lexicon[get_word(pair)][0]
+                    total -= lexicon[get_word(pair)][1]
+                    angerwords        += lexicon[get_word(pair)][2]
+                    anticipationwords += lexicon[get_word(pair)][3]
+                    disgustwords      += lexicon[get_word(pair)][4]
+                    fearwords         += lexicon[get_word(pair)][5]
+                    joywords          += lexicon[get_word(pair)][6]
+                    sadnesswords      += lexicon[get_word(pair)][7]
+                    surprisewords     += lexicon[get_word(pair)][8]
+                    trustwords        += lexicon[get_word(pair)][9]
+                    total_words += 1
+
+                except:
+                    continue
+                # print("no negation found for Word(s):" + str(get_word(pair)))
         else:
             #add value straight values to totals
-            print("don't look for negation")
-    exit()
-
+            try:
+                total += lexicon[get_word(pair)][0]
+                total -= lexicon[get_word(pair)][1]
+                angerwords        += lexicon[get_word(pair)][2]
+                anticipationwords += lexicon[get_word(pair)][3]
+                disgustwords      += lexicon[get_word(pair)][4]
+                fearwords         += lexicon[get_word(pair)][5]
+                joywords          += lexicon[get_word(pair)][6]
+                sadnesswords      += lexicon[get_word(pair)][7]
+                surprisewords     += lexicon[get_word(pair)][8]
+                trustwords        += lexicon[get_word(pair)][9]
+            except:
+                continue
+            # print("don't look for negation")
+    f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (total_words+2)) + '\r\n')
 
 # print(processed_comments)
-for x in processed_comments:
-    get_text_from_preprocess(x)
-
-
-
-
-
-exit()
-
-
-
-
-#this iterates through each comment, removes the punctuation, splits the comment by white space and
-#sets the words to lowercase
-#Then the words are checked to see if they are misspelled, misspelled words are then corrected and
-#appended to the list words
-#The Hash table is then created to account for unique words
-#Lastly the unique words are checked to see if they are in the lexicon, if they are found in the lexicon
-#the tallies are added to the comments running totals
-#after each word in the comment is analyzed an overall sentiment is determined by summing the positive emotions
-#and subtracting the negative emotions
-#This total is then divided by the number of unique words in the comment that were found in the dictionary
-#This total is then divided by the number of unique words in the comment
-#The totals of the other emotions are also tallied and displayed
-for a,b,c,d,e in zip(comments,email,phone,first,last):
-    spellcheck = SpellChecker()
-    processedcomment = []
-    try:
-        processedcomment = a.translate(str.maketrans('', '', string.punctuation))
-    except:
-        continue
-    processedcomment = processedcomment.lower().split()
-    misspelled = []
-    misspelled = spellcheck.unknown(processedcomment)
-    processedcomment = [x for x in processedcomment if x not in misspelled]
-    for y in misspelled:
-        processedcomment.append(spell(y))
-
-    commentdict = {}
-    for x in processedcomment:
-        try:
-            commentdict[x] += 1
-        except:
-            commentdict[x] = 1
-
-    total = wordsInDicts = angerwords = anticipationwords = disgustwords = fearwords = joywords = sadnesswords = surprisewords = trustwords = 0
-
-    for word in commentdict:
-        try:
-            total += lexicon[word][0]
-            total -= lexicon[word][1]
-            wordsInDicts += 1
-
-            angerwords        += lexicon[word][2]
-            anticipationwords += lexicon[word][3]
-            disgustwords      += lexicon[word][4]
-            fearwords         += lexicon[word][5]
-            joywords          += lexicon[word][6]
-            sadnesswords      += lexicon[word][7]
-            surprisewords     += lexicon[word][8]
-            trustwords        += lexicon[word][9]
-        except:
-            continue
-    c = str(c)
-    c = c.translate(str.maketrans('', '', string.punctuation))
-    c = c.translate(str.maketrans('', '', ' '))
-    f.write(str(d) + ',' + str(e) + ',' + str(b) + ',' + str(c) +',')
-    f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (len(commentdict)+2)) + '\r\n')
-
-
-    del processedcomment
-    del misspelled
+for comment,email,phone,first,last in zip(processed_comments, emails, phones, firsts, lasts):
+    f.write(str(first) + ',' + str(last) + ',' + str(email) + ',' + str(phone) + ',')
+    get_text_from_preprocess(comment)

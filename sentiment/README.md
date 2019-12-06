@@ -1,4 +1,34 @@
-## Instructions on how to run the sentiment analysis.
+
+## Additional Set Up Required
+### 1. Download Stanford CoreNLP Package
+- Follow this link to Download the Newest Version of CoreNLP[https://stanfordnlp.github.io/CoreNLP/]
+![Download Screen](./img/corenlpdownload.png)
+
+### 2. Extract Files from Downloaded Package
+- Extract the files from zip file that was downloaded in step 1
+![Extract NLP Files](./img/extractnlp.png)
+
+### 3. Install Java 64 bit
+- Install the Java 64 bit found here[https://java.com/en/download/manual.jsp]
+- It should be the Windows Offline (64-bit)
+![Java 64 Bit](./img/windows64bitjava.png)
+
+### 4. Install Sentiment Specific Python Packages
+- in the sentiment folder run the following command: <br/>
+`pip install -r requirements.txt`
+
+### 5. Before you can run the sentiment program, the Stanford Server must be started
+- Open a second instance of CMD prompt or bash
+- Change into the extracted folder of the Stanford CoreNLP Package
+- Run the following command: <br/>
+`java -mx5g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer`
+- If there is an error that states that port is in use: <br/>
+`netstat -ano | findstr :9000` <br/>
+`taskkill /PID [THE NUMBER AFTER LISTENING] /F` <br/>
+- Re run the command:
+`java -mx5g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer`
+![Execution](./img/execution.png)
+## 6 Instructions on how to run the sentiment analysis.
 
 ### Format for how the execution should be ran
 `python sentiment.py -lexicon PATH_TO_LEXICON_SOURCE -data PATH_TO_DATA_SOURCE -file PATH_TO_OUTPUT_FILE -H`

@@ -54,6 +54,18 @@
 ### Example with header
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv -H`
 
+### Setting up config [OPTIONAL]
+- Below are the default negator, boundary, and punctuation terms.
+- They will be used if the sheet, or columns do not exist or have size 0
+- Negators = ["not", "no", "n't", "neither", "nor", "nothing", "never", "none", "lack", "lacked", "lacking", "lacks", "missing", "without", "absence", "devoid"]
+- Boundary Words = ["but", "and", "or", "since", "because", "while", "after", "before", "when", "though", "although", "if", "which", "despite", "so", "then", "thus", "where", "whereas", "until", "unless"]
+- Punctuation = [".", ",", ";", "!", "?", ":", ")", "(", "\"", "'", "-"]
+- To create a custom config: In the Lexicon, Create a second sheet
+- The First Column is designated for Negator Terms
+- The Second Column is designated for Boundary Words
+- The Third Column is designated for Punctuation  
+- The names of the columns can be anything as it will be removed when read in, therefore the terms of use need to start at line 2 in each column.
+![Config](./img/sheet2lex.PNG)
 
 ## List of Features
 - Using command line arguments knows where to read data from <br />
@@ -62,9 +74,9 @@
 - Reads input from excel file for data <br />
 - Grabs all comments from all sheets <br />
 - Only counts unique words into the sentiment <br />
-- Spell Checks Words <br />
-- Removes all punctuation from a comment <br />
 - Edge Cases (divide by 0 or empty comment or weird punctuation) <br />
 - Calculates sentiment based on positive and negative words in the comment <br />
 - Tallies up all emotions in a comment <br />
 - Outputs the corresponding data to specified file or default file <br />
+- Able to negate terms based on boundary words and negatory terms
+- Able to change configuration based on user demands

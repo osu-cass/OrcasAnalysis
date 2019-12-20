@@ -68,7 +68,7 @@
 ### 7 Setting up environment variables
 - In the windows search bar in the bottom left corner near the start menu search for "Edit environment variables"
 ![Edit environment variables](./img/windowssearch.png)
-- When the screen opens add a new environment variable to the user local variables
+- When the screen opens add a new environment variable to the system variables
 - The name of the new variable has to be named CHROME_PATH and should be the path to the chrome driver you just installed and extracted
 ![Set up environment](./img/setupenvironment.png)
 ![What it should look like after](./img/whatitshouldlooklike.png)
@@ -78,7 +78,7 @@
 ## Inital Set Up Mac
 ### 1 Follow the initial set up instruction on how to install Python3 on Mac
 ### 2 Install Pip
-- in the command line type <br/> 
+- in the command line type <br/>
 `curl https://bootstrap.pypa.io/pypa.io/get-pip.py -o get-pip.py` <br/>
 `python get-pip.py`
 ### 3 After installing pip, we need to install all the package dependencies. <br/>
@@ -103,17 +103,3 @@
 `export CHROME_PATH="$HOME/Desktop/chromedriver"`
 ### 7 Finished and now you can run your scraper for Tweets
 - The installation is now complete and you can run the tweet scraper with the execution instructions above
-
-
-
-
-
-
-
-
-
-
-
-
-
-

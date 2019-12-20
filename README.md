@@ -1,6 +1,8 @@
 ## Requirements:
 >Python 3 (64 bit) <br />  
 >the package dependencies are in the requirements.txt file
+>Java
+>CoreNLP (Instructions in Sentiment Readme)
 
 ## Initial Set Up Windows
 ### 1 Go to Python.org
@@ -23,6 +25,23 @@
 `pip install -r requirements.txt`
 ### 8 with all the dependencies install you are now able to run the sentiment analysis with the semantics above
 
+## Seting up Java and CoreNLP
+In order to run the sentiment analysis package you will need the CoreNLP package and Java installed. We have created a Powershell scirpt that will install and setup both of these depencies for you. The Instructions below will show you how to use this script.
+
+This command will take a few minuts.
+
+### 1 Open Power Shell as Administrator
+Go to the home menu and search for Powershell. Next right click and select run and administrator.
+
+### 2 Navigate to the project path
+
+### 3 Run the Script
+Once you are at the root of the project type ``` .\orcassetup.ps1```. This command will likely ask you a few questions respond Yes to these prompts and make take a few minuts to run. Once this script is done running you will be ready to use the CoreNLP service.
+
+## Download CoreNLP with out setting up java
+If you've already set up Java and want to downlaod the CoreNLP tool we've create a script to download and unzip this code for you in the correct location. Run the following to install this tool:
+
+```.\downloadnlp.ps1```
 
 ## Initial Setup MacOS
 ### Install Brew

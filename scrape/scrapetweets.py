@@ -3,10 +3,12 @@ import time
 import xlwt
 import argparse
 import os
+import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--from_date', '-F', help='Enter start date to search tweets')
-parser.add_argument('--to_date', '-T', help='Enter end date to search tweets')
+parser.add_argument('--from_date', '-F', help='Enter start date to search tweets in the form YYYY-MM-DD')
+parser.add_argument('--to_date', '-T', help='Enter end date to search tweets YYYY-MM-DD')
+parser.add_argument('--lang', '-L', help='Enter Lang Code for specific Language(i.e. en, ja, kr)')
 parser.add_argument('hashtags', nargs='*')
 args = parser.parse_args()
 
@@ -24,6 +26,10 @@ except:
 driver = webdriver.Chrome(chrome_path, options=option)
 
 queryurl = "https://twitter.com/search?f=tweets&vertical=default&q="
+
+if args.lang:
+    queryurl += 'lang%3A' + args.lang
+
 for hashtag in args.hashtags:
     queryurl += "%23" + hashtag
 
@@ -50,21 +56,50 @@ while True:
         except:
             break
 
-tweets = driver.find_elements_by_xpath("//p[@class='TweetTextSize  js-tweet-text tweet-text']")
+tweets_container = driver.find_elements_by_xpath("//p[@class='TweetTextSize  js-tweet-text tweet-text']")
+tweets_time_stamp_container = driver.find_elements_by_xpath("//span[@class='_timestamp js-short-timestamp ']")
 
+subtweet_links_container = driver.find_elements_by_xpath("//div/div[2]/div[3]/div/a[@class='QuoteTweet-link js-nav']")
 
+tweets = []
+for tweet, time in zip(tweets_container, tweets_time_stamp_container):
+    tweets.append((tweet.text, str(datetime.datetime.fromtimestamp(int(time.get_attribute('data-time'))))))
+
+subtweets = []
+sub_driver = webdriver.Chrome(chrome_path, options=option)
+for container in subtweet_links_container:
+    sub_driver.get(container.get_attribute("href"))
+    subtweet_text_container = sub_driver.find_element_by_xpath("//p[@class='TweetTextSize TweetTextSize--jumbo js-tweet-text tweet-text']")
+    subtweet_datetime_container = sub_driver.find_element_by_xpath("//span[@class='metadata']/span")
+    subtweet_datetime_raw = subtweet_datetime_container.text
+    subtweet_datetime = datetime.datetime.strptime(subtweet_datetime_raw, '%I:%M %p - %d %b %Y')
+    subtweets.append((subtweet_text_container.text,str(subtweet_datetime)))
+
+tweets = tweets + subtweets
 
 workbook = xlwt.Workbook()
 sheet = workbook.add_sheet('mytweets')
 
 for index, value in enumerate(tweets):
     try:
-        sheet.write(index, 0, value.text)
+        sheet.write(index, 0, value[1])
+        sheet.write(index, 1, value[0])
     except:
         continue
-outputfile = '.xls'
+outputfile = ''
 for hashtag in args.hashtags:
-    outputfile = hashtag + outputfile
+    outputfile = outputfile + hashtag
+if args.from_date:
+    outputfile = outputfile + 'from(' + str(args.from_date) + ')'
+else:
+    outputfile = outputfile + 'from(beginning)'
+
+if args.to_date:
+    outputfile = outputfile + 'to(' + str(args.to_date) + ')'
+else:
+    outputfile = outputfile + 'to(now)'
+outputfile = outputfile + '.xls'
 workbook.save(outputfile)
 
+sub_driver.close()
 driver.close()

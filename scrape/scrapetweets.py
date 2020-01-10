@@ -61,16 +61,10 @@ tweets_time_stamp_container = driver.find_elements_by_xpath("//span[@class='_tim
 
 subtweet_links_container = driver.find_elements_by_xpath("//div/div[2]/div[3]/div/a[@class='QuoteTweet-link js-nav']")
 
-# for time in tweets_time_stamp_container:
-#     # print(time)
-#     # print(time.get_attribute('data-time'))
-#     print(datetime.datetime.fromtimestamp(int(time.get_attribute('data-time'))))
-
 tweets = []
 for tweet, time in zip(tweets_container, tweets_time_stamp_container):
     tweets.append((tweet.text, str(datetime.datetime.fromtimestamp(int(time.get_attribute('data-time'))))))
 
-# print(subtweet_links_container)
 subtweets = []
 sub_driver = webdriver.Chrome(chrome_path, options=option)
 for container in subtweet_links_container:
@@ -79,8 +73,6 @@ for container in subtweet_links_container:
     subtweet_datetime_container = sub_driver.find_element_by_xpath("//span[@class='metadata']/span")
     subtweet_datetime_raw = subtweet_datetime_container.text
     subtweet_datetime = datetime.datetime.strptime(subtweet_datetime_raw, '%I:%M %p - %d %b %Y')
-    # print(subtweet_datetime)
-    # subtweet_text = subtweet_text_container.text
     subtweets.append((subtweet_text_container.text,str(subtweet_datetime)))
 
 tweets = tweets + subtweets

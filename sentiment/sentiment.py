@@ -35,12 +35,6 @@ class Preprocess():
         for r in rows:
             final_string += r
         processed_comments.append(final_string)
-        # output_file_path = self.output_folder + '/' + file_name
-        # if os.path.exists(output_file_path):
-        #     open(output_file_path, 'w').close()
-        # with open(output_file_path, 'a') as preprocessed_out:
-        #     for r in rows:
-        #         preprocessed_out.write(unidecode.unidecode(r) + "\n")
 
     def pos_tagging(self, raw_comment_text, i):
         try:
@@ -49,6 +43,7 @@ class Preprocess():
             file_name = str(i) + '.txt'
             self.output_preprocessed_data(parsed_json, file_name)
         except:
+            processed_comments.append("./.")
             return
 
 
@@ -67,7 +62,7 @@ f = open(output_file, "a+")
 
 if args.header:
     f.write('first name,last name,email,phone,# of anger words,# of anticipation words,# of disgust words,# of fear words,# of joy words,# of sadness words,# of surprise words,# of trust words,sentiment\r\n')
-#initializes the lexicon dictionary, with the word as the key and the set of values as the value
+
 lexicon = {}
 negators = ["not", "no", "n't", "neither", "nor", "nothing", "never", "none", "lack", "lacked", "lacking", "lacks", "missing", "without", "absence", "devoid"]
 boundary_words = ["but", "and", "or", "since", "because", "while", "after", "before", "when", "though", "although", "if", "which", "despite", "so", "then", "thus", "where", "whereas", "until", "unless"]
@@ -90,7 +85,6 @@ for y,sh in enumerate(xlrd.open_workbook(lexicon_source).sheets()):
             punct = sh.col_values(2)
             punct.pop(0)
 
-#this initializes the comments to be analyzed and parses the excel sheets for the comments column
 comments = []
 emails = []
 phones = []
@@ -115,7 +109,6 @@ for index, comment in enumerate(comments):
     p.pos_tagging(comment, index)
 
 
-# skipped = {"JJ": ["even", "to", "being", "be", "been", "is", "was", "'ve", "have", "had", "do", "did", "done", "of", "as", "DT", "PSP$"], "RB": ["VB", "VBZ", "VBP", "VBG"], "VB":["TO", "being", "been", "be"], "NN":["DT", "JJ", "NN", "of", "have", "has", "come", "with", "include"]}
 tags = ["NN", "VB", "JJ", "RB"]
 def get_word(pair): return pair[0]
 def get_tag(pair): return pair[1]
@@ -144,40 +137,55 @@ def get_text_from_preprocess(processed_comment):
     for word in processed_comment_list:
         text.append(word.split("/"))
     for index,pair in enumerate(text):
-        if get_tag(pair) in tags:
-            should_inverse = find_negation(index, get_tag(pair), text)
-            if should_inverse:
-                #Add inverse values to the total emotion
-                try:
-                    total += lexicon[get_word(pair)][1] #Adds the negative value because negation of a negative = postive
-                    total -= lexicon[get_word(pair)][0] #Subtracts the postive value because negation of a positive = negative
-                    total_words += 1
+        try:
+            if get_tag(pair) in tags:
+                should_inverse = find_negation(index, get_tag(pair), text)
+                if should_inverse:
+                    #Add inverse values to the total emotion
+                    try:
+                        total += lexicon[get_word(pair)][1] #Adds the negative value because negation of a negative = postive
+                        total -= lexicon[get_word(pair)][0] #Subtracts the postive value because negation of a positive = negative
+                        total_words += 1
 
-                    # Anger += Anger
-                    angerwords        += lexicon[get_word(pair)][2]
-                    # anticipationwords += lexicon[get_word(pair)][3]
-                    # Surprise += Anticipation
-                    surprisewords     += lexicon[get_word(pair)][3]
-                    # disgust += disgust
-                    disgustwords      += lexicon[get_word(pair)][4]
-                    # Fear += Fear
-                    fearwords         += lexicon[get_word(pair)][5]
-                    # joywords          += lexicon[get_word(pair)][6]
-                    # Sadness += Joy
-                    sadnesswords      += lexicon[get_word(pair)][6]
-                    # Sadness += Sandness
-                    sadnesswords      += lexicon[get_word(pair)][7]
-                    # Surprise += Surprise
-                    surprisewords     += lexicon[get_word(pair)][8]
-                    # trustwords        += lexicon[get_word(pair)][9]
-                    # Disgust += Trust
-                    disgustwords      += lexicon[get_word(pair)][9]
-                except:
-                    # print("negation found for Word(s) but no values in dictionary:" + str(get_word(pair)))
-                    continue
-                # print("negation found for Word(s):" + str(get_word(pair)))
+                        # Anger += Anger
+                        angerwords        += lexicon[get_word(pair)][2]
+                        # anticipationwords += lexicon[get_word(pair)][3]
+                        # Surprise += Anticipation
+                        surprisewords     += lexicon[get_word(pair)][3]
+                        # disgust += disgust
+                        disgustwords      += lexicon[get_word(pair)][4]
+                        # Fear += Fear
+                        fearwords         += lexicon[get_word(pair)][5]
+                        # joywords          += lexicon[get_word(pair)][6]
+                        # Sadness += Joy
+                        sadnesswords      += lexicon[get_word(pair)][6]
+                        # Sadness += Sandness
+                        sadnesswords      += lexicon[get_word(pair)][7]
+                        # Surprise += Surprise
+                        surprisewords     += lexicon[get_word(pair)][8]
+                        # trustwords        += lexicon[get_word(pair)][9]
+                        # Disgust += Trust
+                        disgustwords      += lexicon[get_word(pair)][9]
+                    except:
+                        continue
+                else:
+                    try:
+                        total += lexicon[get_word(pair)][0]
+                        total -= lexicon[get_word(pair)][1]
+                        angerwords        += lexicon[get_word(pair)][2]
+                        anticipationwords += lexicon[get_word(pair)][3]
+                        disgustwords      += lexicon[get_word(pair)][4]
+                        fearwords         += lexicon[get_word(pair)][5]
+                        joywords          += lexicon[get_word(pair)][6]
+                        sadnesswords      += lexicon[get_word(pair)][7]
+                        surprisewords     += lexicon[get_word(pair)][8]
+                        trustwords        += lexicon[get_word(pair)][9]
+                        total_words += 1
+
+                    except:
+                        continue
             else:
-                #add given values to totals
+                #add value straight values to totals
                 try:
                     total += lexicon[get_word(pair)][0]
                     total -= lexicon[get_word(pair)][1]
@@ -189,32 +197,15 @@ def get_text_from_preprocess(processed_comment):
                     sadnesswords      += lexicon[get_word(pair)][7]
                     surprisewords     += lexicon[get_word(pair)][8]
                     trustwords        += lexicon[get_word(pair)][9]
-                    total_words += 1
-
                 except:
-                    # print("Do not negate for found for Word(s) but no values in dictionary:" + str(get_word(pair)))
                     continue
-                # print("Do not negate for found for Word(s):" + str(get_word(pair)))
-        else:
-            #add value straight values to totals
-            try:
-                total += lexicon[get_word(pair)][0]
-                total -= lexicon[get_word(pair)][1]
-                angerwords        += lexicon[get_word(pair)][2]
-                anticipationwords += lexicon[get_word(pair)][3]
-                disgustwords      += lexicon[get_word(pair)][4]
-                fearwords         += lexicon[get_word(pair)][5]
-                joywords          += lexicon[get_word(pair)][6]
-                sadnesswords      += lexicon[get_word(pair)][7]
-                surprisewords     += lexicon[get_word(pair)][8]
-                trustwords        += lexicon[get_word(pair)][9]
-            except:
-                # print("don't look for negation but no values in dictionary:" + str(get_word(pair)))
-                continue
-            # print("don't look for negation:" + str(get_word(pair)))
+        except:
+            continue
     f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (total_words+2)) + '\r\n')
 
-# print(processed_comments)
 for comment,email,phone,first,last in zip(processed_comments, emails, phones, firsts, lasts):
-    f.write('"' + str(first) + '","' + str(last) + '","' + str(email) + '","\'' + str(phone) + '\'",')
-    get_text_from_preprocess(comment)
+    try:
+        f.write('"' + str(first).encode('ascii', 'ignore').decode('ascii') + '","' + str(last).encode('ascii', 'ignore').decode('ascii') + '","' + str(email).encode('ascii', 'ignore').decode('ascii') + '","\'' + str(phone).encode('ascii', 'ignore').decode('ascii') + '\'",')
+        get_text_from_preprocess(comment)
+    except:
+        continue

@@ -33,7 +33,7 @@ class Preprocess():
             rows.append(parsed_sent)
         final_string = ""
         for r in rows:
-            final_string += r
+            final_string += r + " "
         processed_comments.append(final_string)
 
     def pos_tagging(self, raw_comment_text, i):
@@ -110,7 +110,7 @@ for index, comment in enumerate(comments):
 
 
 tags = ["NN", "VB", "JJ", "RB"]
-def get_word(pair): return pair[0]
+def get_word(pair): return pair[0].lower()
 def get_tag(pair): return pair[1]
 
 def at_boundary(index, text):

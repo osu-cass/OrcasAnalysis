@@ -1,4 +1,6 @@
 sentiment/stanford-corenlp-full-2018-10-05/
 sentiment/commentdata/
 sentiment/tools/
+*.csv
+*.xlsx
 

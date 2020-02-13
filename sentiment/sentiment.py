@@ -33,7 +33,7 @@ class Preprocess():
             rows.append(parsed_sent)
         final_string = ""
         for r in rows:
-            final_string += r
+            final_string += r + " "
         processed_comments.append(final_string)
 
     def pos_tagging(self, raw_comment_text, i):
@@ -66,7 +66,7 @@ if args.header:
 lexicon = {}
 negators = ["not", "no", "n't", "neither", "nor", "nothing", "never", "none", "lack", "lacked", "lacking", "lacks", "missing", "without", "absence", "devoid"]
 boundary_words = ["but", "and", "or", "since", "because", "while", "after", "before", "when", "though", "although", "if", "which", "despite", "so", "then", "thus", "where", "whereas", "until", "unless"]
-punct = [".", ",", ";", "!", "?", ":", ")", "(", "\"", "'", "-"]
+punct = [".", ",", ";", "!", "?", ":", "\"", "-"]
 
 
 for y,sh in enumerate(xlrd.open_workbook(lexicon_source).sheets()):
@@ -110,7 +110,7 @@ for index, comment in enumerate(comments):
 
 
 tags = ["NN", "VB", "JJ", "RB"]
-def get_word(pair): return pair[0]
+def get_word(pair): return pair[0].lower()
 def get_tag(pair): return pair[1]
 
 def at_boundary(index, text):
@@ -151,21 +151,27 @@ def get_text_from_preprocess(processed_comment):
                         angerwords        += lexicon[get_word(pair)][2]
                         # anticipationwords += lexicon[get_word(pair)][3]
                         # Surprise += Anticipation
-                        surprisewords     += lexicon[get_word(pair)][3]
+                        # surprisewords     += lexicon[get_word(pair)][3]
+                        if(lexicon[get_word(pair)][3] or lexicon[get_word(pair)][8]):
+                            surprisewords += 1
                         # disgust += disgust
-                        disgustwords      += lexicon[get_word(pair)][4]
+                        # disgustwords      += lexicon[get_word(pair)][4]
                         # Fear += Fear
                         fearwords         += lexicon[get_word(pair)][5]
                         # joywords          += lexicon[get_word(pair)][6]
                         # Sadness += Joy
-                        sadnesswords      += lexicon[get_word(pair)][6]
-                        # Sadness += Sandness
-                        sadnesswords      += lexicon[get_word(pair)][7]
+                        # sadnesswords      += lexicon[get_word(pair)][6]
+                        # Sadness += Sadness
+                        # sadnesswords      += lexicon[get_word(pair)][7]
+                        if(lexicon[get_word(pair)][6] or lexicon[get_word(pair)][7]):
+                            sadnesswords += 1
                         # Surprise += Surprise
-                        surprisewords     += lexicon[get_word(pair)][8]
+                        # surprisewords     += lexicon[get_word(pair)][8]
                         # trustwords        += lexicon[get_word(pair)][9]
                         # Disgust += Trust
-                        disgustwords      += lexicon[get_word(pair)][9]
+                        # disgustwords      += lexicon[get_word(pair)][9]
+                        if(lexicon[get_word(pair)][4] or lexicon[get_word(pair)][9]):
+                            disgustwords += 1
                     except:
                         continue
                 else:
@@ -201,7 +207,7 @@ def get_text_from_preprocess(processed_comment):
                     continue
         except:
             continue
-    f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (total_words+2)) + '\r\n')
+    f.write( str(angerwords) + ',' + str(anticipationwords) + ',' + str(disgustwords) + ',' + str(fearwords) + ',' + str(joywords) + ',' + str(sadnesswords) + ',' + str(surprisewords) + ',' + str(trustwords) + ',' + str(total / (total_words+2)) + '\n')
 
 for comment,email,phone,first,last in zip(processed_comments, emails, phones, firsts, lasts):
     try:

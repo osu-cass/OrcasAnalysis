@@ -19,7 +19,7 @@ processed_comments = []
 class Preprocess():
     def __init__(self):
         self.nlp = StanfordCoreNLP('http://localhost:9000')
-        self.stanford_annotators = 'tokenize,ssplit,pos'
+        self.stanford_annotators = 'tokenize,ssplit,pos,lemma'
         self.output_folder = 'commentdata'
 
     def str_process(self, comment_text):
@@ -29,12 +29,15 @@ class Preprocess():
     def output_preprocessed_data(self, json_input, file_name):
         rows = []
         for sent in json_input['sentences']:
-            parsed_sent = " ".join([t['originalText'] + "/" + t['pos'] for t in sent['tokens']])
+            # print(sent)
+            # print(sent['tokens'])
+            parsed_sent = " ".join([t['lemma'] + "/" + t['pos'] for t in sent['tokens']])
             rows.append(parsed_sent)
         final_string = ""
         for r in rows:
             final_string += r + " "
         processed_comments.append(final_string)
+        print(final_string)
 
     def pos_tagging(self, raw_comment_text, i):
         try:
@@ -107,7 +110,7 @@ p = Preprocess()
 
 for index, comment in enumerate(comments):
     p.pos_tagging(comment, index)
-
+    exit()
 
 tags = ["NN", "VB", "JJ", "RB"]
 def get_word(pair): return pair[0].lower()

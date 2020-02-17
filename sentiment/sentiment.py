@@ -37,7 +37,7 @@ class Preprocess():
         for r in rows:
             final_string += r + " "
         processed_comments.append(final_string)
-        print(final_string)
+        # print(final_string)
 
     def pos_tagging(self, raw_comment_text, i):
         try:

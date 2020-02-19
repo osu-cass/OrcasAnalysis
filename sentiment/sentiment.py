@@ -110,7 +110,6 @@ p = Preprocess()
 
 for index, comment in enumerate(comments):
     p.pos_tagging(comment, index)
-    exit()
 
 tags = ["NN", "VB", "JJ", "RB"]
 def get_word(pair): return pair[0].lower()

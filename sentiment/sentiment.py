@@ -12,6 +12,7 @@ parser.add_argument('--lexicon', '-l', help="specify path to file that should be
 parser.add_argument('--data', '-d', help="specify path to data that should be analyzed")
 parser.add_argument('--file', '-f', help="specify path to output file")
 parser.add_argument('--header', '-H', help="boolean flag so that output produces the header, optional (default=false)", action='store_true')
+parser.add_argument('--negate', '-N', help="boolean flag so that it the tally counts the inverse sentiment of a word, optional (default=false)", action='store_true')
 parser.add_argument('--settings', '-s', help="specify path to setting file")
 args = parser.parse_args()
 
@@ -20,7 +21,7 @@ processed_comments = []
 class Preprocess():
     def __init__(self):
         self.nlp = StanfordCoreNLP('http://localhost:9000')
-        self.stanford_annotators = 'tokenize,ssplit,pos'
+        self.stanford_annotators = 'tokenize,ssplit,pos,lemma'
         self.output_folder = 'commentdata'
 
     def str_process(self, comment_text):
@@ -30,7 +31,7 @@ class Preprocess():
     def output_preprocessed_data(self, json_input, file_name):
         rows = []
         for sent in json_input['sentences']:
-            parsed_sent = " ".join([t['originalText'] + "/" + t['pos'] for t in sent['tokens']])
+            parsed_sent = " ".join([t['lemma'] + "/" + t['pos'] for t in sent['tokens']])
             rows.append(parsed_sent)
         final_string = ""
         for r in rows:
@@ -120,19 +121,19 @@ if args.settings:
                 raw_negators = [x for x in raw_negators if x != '']
                 negators = raw_negators
                 negators.pop(0)
-                print(negators)
+                # print(negators)
             if len(sh.col_values(1)) != 0 and len(sh.col_values(1)) != 1:
                 raw_boundary = sh.col_values(1)
                 raw_boundary = [x for x in raw_boundary if x != '']
                 boundary_words = raw_boundary
                 boundary_words.pop(0)
-                print(boundary_words)
+                # print(boundary_words)
             if len(sh.col_values(2)) != 0 and len(sh.col_values(2)) != 1:
                 raw_punct = sh.col_values(2)
                 raw_punct = [x for x in raw_punct if x != '']
                 punct = raw_punct
                 punct.pop(0)
-                print(punct)
+                # print(punct)
             if len(sh.col_values(3)) != 0:
                 raw_from = sh.col_values(3)
                 raw_from = [x for x in raw_from if x != '']
@@ -145,17 +146,6 @@ if args.settings:
                 to_emotions.pop(0)
                 for from_emotion,to_emotion in zip(from_emotions, to_emotions):
                     negation_mappings[emotion_mappings[from_emotion]] = emotion_array_mappings[emotion_mappings[to_emotion]]
-negation_mappings[2][0] += 1
-print(negation_mappings)
-print(angerwords)
-print(anticipationwords)
-print(disgustwords)
-print(fearwords)
-print(joywords)
-print(sadnesswords)
-print(surprisewords)
-print(trustwords)
-# exit()
 
 comments = []
 emails = []
@@ -232,61 +222,29 @@ def get_text_from_preprocess(processed_comment):
     for word in processed_comment_list:
         text.append(word.split("/"))
     for index,pair in enumerate(text):
+        #reset counted flag
+        for x in range(8):
+            negation_mappings[x+2][1] = 0
         try:
             if get_tag(pair) in tags:
-                should_inverse = find_negation(index, get_tag(pair), text)
+                should_inverse = False
+                if args.negate:
+                    should_inverse = find_negation(index, get_tag(pair), text)
                 if should_inverse:
+                    print("negates")
                     #Add inverse values to the total emotion
                     try:
                         total[0] += lexicon[get_word(pair)][1] #Adds the negative value because negation of a negative = postive
                         total[0] -= lexicon[get_word(pair)][0] #Subtracts the postive value because negation of a positive = negative
                         total_words[0] += 1
 
-                        # negation_mappings[2][0] += lexicon[get_word(pair)][2]
-                        # negation_mappings[3][0] += lexicon[get_word(pair)][3]
-                        # negation_mappings[4][0] += lexicon[get_word(pair)][4]
-                        # negation_mappings[5][0] += lexicon[get_word(pair)][5]
-                        # negation_mappings[6][0] += lexicon[get_word(pair)][6]
-                        # negation_mappings[7][0] += lexicon[get_word(pair)][7]
-                        # negation_mappings[8][0] += lexicon[get_word(pair)][8]
-                        # negation_mappings[9][0] += lexicon[get_word(pair)][9]
-
-                        for x in range(7):
+                        for x in range(8):
+                            #checks to see if mapping has been used already for a word
                             if negation_mappings[x+2][1] == 0:
                                 # to account for double counting
                                 if lexicon[get_word(pair)][x+2] != 0:
                                     negation_mappings[x+2][0] += lexicon[get_word(pair)][x+2]
                                     negation_mappings[x+2][1] = 1
-                        print(negation_mappings)
-                        #reset counted flag
-                        for x in range(7):
-                            negation_mappings[x+2][1] = 0
-
-                        # # Anger += Anger
-                        # angerwords        += lexicon[get_word(pair)][2]
-                        # # anticipationwords += lexicon[get_word(pair)][3]
-                        # # Surprise += Anticipation
-                        # # surprisewords     += lexicon[get_word(pair)][3]
-                        # if(lexicon[get_word(pair)][3] or lexicon[get_word(pair)][8]):
-                        #     surprisewords += 1
-                        # # disgust += disgust
-                        # # disgustwords      += lexicon[get_word(pair)][4]
-                        # # Fear += Fear
-                        # fearwords         += lexicon[get_word(pair)][5]
-                        # # joywords          += lexicon[get_word(pair)][6]
-                        # # Sadness += Joy
-                        # # sadnesswords      += lexicon[get_word(pair)][6]
-                        # # Sadness += Sadness
-                        # # sadnesswords      += lexicon[get_word(pair)][7]
-                        # if(lexicon[get_word(pair)][6] or lexicon[get_word(pair)][7]):
-                        #     sadnesswords += 1
-                        # # Surprise += Surprise
-                        # # surprisewords     += lexicon[get_word(pair)][8]
-                        # # trustwords        += lexicon[get_word(pair)][9]
-                        # # Disgust += Trust
-                        # # disgustwords      += lexicon[get_word(pair)][9]
-                        # if(lexicon[get_word(pair)][4] or lexicon[get_word(pair)][9]):
-                        #     disgustwords += 1
                     except:
                         continue
                 else:

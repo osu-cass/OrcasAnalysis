@@ -63,7 +63,7 @@ if args.file:
 f = open(output_file, "a+")
 
 if args.header:
-    f.write('first name,last name,email,phone,# of anger words,# of anticipation words,# of disgust words,# of fear words,# of joy words,# of sadness words,# of surprise words,# of trust words,sentiment\r\n')
+    f.write('ID,first name,last name,email,phone,# of anger words,# of anticipation words,# of disgust words,# of fear words,# of joy words,# of sadness words,# of surprise words,# of trust words,sentiment\r\n')
 
 lexicon = {}
 negators = ["not", "no", "n't", "neither", "nor", "nothing", "never", "none", "lack", "lacked", "lacking", "lacks", "missing", "without", "absence", "devoid"]
@@ -104,6 +104,8 @@ emotion_array_mappings[9] = trustwords
 
 negation_mappings = {}
 
+to_emotions = ["anger", "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"]
+from_emotions = ["anger", "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"]
 
 for y,sh in enumerate(xlrd.open_workbook(lexicon_source).sheets()):
     if y == 0:
@@ -119,39 +121,53 @@ if args.settings:
             if len(sh.col_values(0)) != 0 and len(sh.col_values(0)) != 1:
                 raw_negators = sh.col_values(0)
                 raw_negators = [x for x in raw_negators if x != '']
-                negators = raw_negators
-                negators.pop(0)
+                if len(raw_negators) != 0 and len(raw_negators) != 1:
+                    negators = raw_negators
+                    negators.pop(0)
                 # print(negators)
             if len(sh.col_values(1)) != 0 and len(sh.col_values(1)) != 1:
                 raw_boundary = sh.col_values(1)
                 raw_boundary = [x for x in raw_boundary if x != '']
-                boundary_words = raw_boundary
-                boundary_words.pop(0)
+                if len(raw_boundary) != 0 and len(raw_boundary) != 1:
+                    boundary_words = raw_boundary
+                    boundary_words.pop(0)
                 # print(boundary_words)
             if len(sh.col_values(2)) != 0 and len(sh.col_values(2)) != 1:
                 raw_punct = sh.col_values(2)
                 raw_punct = [x for x in raw_punct if x != '']
-                punct = raw_punct
-                punct.pop(0)
+                if len(raw_boundary) != 0 and len(raw_boundary) != 1:
+                    punct = raw_punct
+                    punct.pop(0)
                 # print(punct)
             if len(sh.col_values(3)) != 0:
                 raw_from = sh.col_values(3)
                 raw_from = [x for x in raw_from if x != '']
-                from_emotions = raw_from
-                from_emotions.pop(0)
+                if len(raw_from) != 0 and len(raw_from) != 1:
+                    from_emotions = raw_from
+                    from_emotions.pop(0)
 
                 raw_to = sh.col_values(4)
                 raw_to = [x for x in raw_to if x != '']
-                to_emotions = raw_to
-                to_emotions.pop(0)
+                if len(raw_to) != 0 and len(raw_to) != 1:
+                    to_emotions = raw_to
+                    to_emotions.pop(0)
+                if len(from_emotions) != len(to_emotions):
+                    print("MAPPING DOES NOT MAP 1 TO 1")
+                    exit()
                 for from_emotion,to_emotion in zip(from_emotions, to_emotions):
                     negation_mappings[emotion_mappings[from_emotion]] = emotion_array_mappings[emotion_mappings[to_emotion]]
+
+else:
+    if args.negate:
+        for from_emotion,to_emotion in zip(from_emotions, to_emotions):
+            negation_mappings[emotion_mappings[from_emotion]] = emotion_array_mappings[emotion_mappings[to_emotion]]
 
 comments = []
 emails = []
 phones = []
 firsts = []
 lasts = []
+ids = []
 
 xls = pd.ExcelFile(data_source)
 
@@ -163,6 +179,7 @@ for sheet_name in xls.sheet_names:
     phones = phones + list(df['phone'])
     firsts = firsts + list(df['first'])
     lasts = lasts + list(df['last'])
+    ids = ids + list(df['ID'])
 
 
 p = Preprocess()
@@ -223,15 +240,15 @@ def get_text_from_preprocess(processed_comment):
         text.append(word.split("/"))
     for index,pair in enumerate(text):
         #reset counted flag
-        for x in range(8):
-            negation_mappings[x+2][1] = 0
+        if args.negate:
+            for x in range(8):
+                negation_mappings[x+2][1] = 0
         try:
             if get_tag(pair) in tags:
                 should_inverse = False
                 if args.negate:
                     should_inverse = find_negation(index, get_tag(pair), text)
                 if should_inverse:
-                    print("negates")
                     #Add inverse values to the total emotion
                     try:
                         total[0] += lexicon[get_word(pair)][1] #Adds the negative value because negation of a negative = postive
@@ -283,9 +300,9 @@ def get_text_from_preprocess(processed_comment):
             continue
     f.write( str(angerwords[0]) + ',' + str(anticipationwords[0]) + ',' + str(disgustwords[0]) + ',' + str(fearwords[0]) + ',' + str(joywords[0]) + ',' + str(sadnesswords[0]) + ',' + str(surprisewords[0]) + ',' + str(trustwords[0]) + ',' + str(total[0] / (total_words[0]+2)) + '\n')
 
-for comment,email,phone,first,last in zip(processed_comments, emails, phones, firsts, lasts):
+for comment,email,phone,first,last,id in zip(processed_comments, emails, phones, firsts, lasts,ids):
     try:
-        f.write('"' + str(first).encode('ascii', 'ignore').decode('ascii') + '","' + str(last).encode('ascii', 'ignore').decode('ascii') + '","' + str(email).encode('ascii', 'ignore').decode('ascii') + '","\'' + str(phone).encode('ascii', 'ignore').decode('ascii') + '\'",')
+        f.write('"' + str(id).encode('ascii', 'ignore').decode('ascii') + '","' + str(first).encode('ascii', 'ignore').decode('ascii') + '","' + str(last).encode('ascii', 'ignore').decode('ascii') + '","' + str(email).encode('ascii', 'ignore').decode('ascii') + '","\'' + str(phone).encode('ascii', 'ignore').decode('ascii') + '\'",')
         get_text_from_preprocess(comment)
-    except:
+    except Exception as e:
         continue

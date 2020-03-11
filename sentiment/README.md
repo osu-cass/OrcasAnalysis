@@ -25,18 +25,18 @@ From the Sentiment Directory run the following command:
 ## 4 Instructions on how to run the sentiment analysis.
 
 ### Format for how the execution should be ran
-`python sentiment.py -lexicon PATH_TO_LEXICON_SOURCE -data PATH_TO_DATA_SOURCE -file PATH_TO_OUTPUT_FILE -H`
+`python sentiment.py --lexicon PATH_TO_LEXICON_SOURCE --data PATH_TO_DATA_SOURCE --settings PATH_TO_SETTINGS_FILE --file PATH_TO_OUTPUT_FILE -H -N`
 
 ### Example:
-`python sentiment.py -lexicon sampledata/lexicon.xlsx -data sampledata/data.xlsx -file output.csv`
+`python sentiment.py --lexicon sampledata/lexicon.xlsx --data sampledata/data.xlsx --settings sampledata/settings.xlsx --file output.csv -H -N`
 
 
 ### This is shorthand for the flags and also works
 
-`python sentiment.py -l PATH_TO_LEXICON_SOURCE -d PATH_TO_DATA_SOURCE -f PATH_TO_OUTPUT_FILE`
+`python sentiment.py -l PATH_TO_LEXICON_SOURCE -d PATH_TO_DATA_SOURCE -s PATH_TO_SETTINGS_FILE -f PATH_TO_OUTPUT_FILE -H -N`
 
 ### Example:
-`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv`
+`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -s sampledata/settings.xlsx -f output.csv -H -N`
 
 ### If the output flag is not specified the program will default to put the results into a file named results.csv
 
@@ -47,6 +47,11 @@ From the Sentiment Directory run the following command:
 
 ### Example with header
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv -H`
+
+### There is an optional parameter that allows for tallies of the opposite sentiment, if a negation should be applied. For this flag to be set all that is needed is just to put -N in the commmand line. If a settings file is not specified it will use the default mapping.
+
+### Example with negation
+`python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -s sampledata/settings.xlsx -f output.csv -N`
 
 ### Setting up config [OPTIONAL]
 - Below are the default negator, boundary, and punctuation terms.

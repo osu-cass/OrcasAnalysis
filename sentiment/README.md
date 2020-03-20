@@ -39,6 +39,7 @@ From the Sentiment Directory run the following command:
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -s sampledata/settings.xlsx -f output.csv -H -N`
 
 ### If the output flag is not specified the program will default to put the results into a file named results.csv
+![Settings File](./img/Config.png)
 
 ### Example:
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx`
@@ -48,7 +49,9 @@ From the Sentiment Directory run the following command:
 ### Example with header
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -f output.csv -H`
 
-### There is an optional parameter that allows for tallies of the opposite sentiment, if a negation should be applied. For this flag to be set all that is needed is just to put -N in the commmand line. If a settings file is not specified it will use the default mapping.
+### There is an optional parameter that allows for tallies of the opposite sentiment, if a negation should be applied. For this flag to be set all that is needed is just to put -N in the command line. If a settings file is not specified it will use the default mapping.
+
+> If you specify the negation flag, without providing a settings file, it will use a default negation mapping where the sentiment tally will be the same, but the positive/negative sentiment for words will be correctly negated.
 
 ### Example with negation
 `python sentiment.py -l sampledata/lexicon.xlsx -d sampledata/data.xlsx -s sampledata/settings.xlsx -f output.csv -N`
